@@ -88,16 +88,6 @@ class MessageController extends Controller
 
         // Session::flash('flash_message','新增成功！');
 
-        //ajax leave message
-        $message = Message::orderBy('created_at',"DESC")->first();
-        // $response = array(
-        //     'id' => $message->id,
-        //     'reply_content' => $message->content
-        // );
-        //
-        // if($request->ajax()){
-        //     return response()->json($response);
-        // }
 
         return Redirect('/message')->with([
             'flash_message','新增成功！'
@@ -144,19 +134,6 @@ class MessageController extends Controller
                 ->orderBy('created_at','DESC')
                 ->get();
         return view('note.show', compact('message','notes'));
-    }
-
-    public function showProfile()
-    {
-        $messages = Message::where('user_id',Auth::id())->paginate(1);
-        // $currentTime = Carbon::now();
-        // $diff = date('G:i', strtotime($currentTime) - strtotime(Auth::user()->created_at));
-        // $diff = (new Carbon($currentTime))-> diff(new Carbon(Auth::user()->created_at))->format('%h:%I');
-        // $diff = Auth::user()->created_at->diffForHumans();
-        // dd($diff);
-        return view('profile',[
-            'messages' => $messages
-        ]);
     }
 
 }

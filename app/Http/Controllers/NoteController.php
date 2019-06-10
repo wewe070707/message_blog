@@ -23,12 +23,16 @@ class NoteController extends Controller
                 'reply_content' => $request->reply_content,
                 'user_id' => $request->user()->id
             ]);
+            //ajax leave message
+            // $message = Message::orderBy('created_at',"DESC")->first();
 
             $response = array([
+                // 'created_at' => Carbon::now(),
                 'reply_content' => $request->reply_content,
+                'name' => $request->user()->name,
                 'user_id' => $request->user()->id
                 ]);
-                
+
             if($request->ajax()){
                 return response()->json($response);
             }
