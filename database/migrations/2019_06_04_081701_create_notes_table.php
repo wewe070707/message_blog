@@ -15,8 +15,13 @@ class CreateNotesTable extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('content');
+            $table->unsignedBigInteger('user_id')->index();
+            $table->unsignedBigInteger('message_id')->index();
+            $table->text('reply_content');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('message_id')->references('id')->on('messages');
         });
     }
 

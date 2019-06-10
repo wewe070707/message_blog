@@ -1,0 +1,42 @@
+#note_box{
+  	width: auto;
+  	height:200px;
+  	margin:0px auto;
+  	border:1px solid #000 ;
+  	border-radius: 10pt ;
+    /* display: inline-block; */
+}
+#note_box:hover{
+    background: #ccd2d8;
+}
+#note_box span{
+    vertical-align:bottom;
+    color:#43a5f5;
+}
+
+table {
+  text-align:center;
+  align: center;
+  valign: center;
+}
+h1{
+    display: inline;
+    float: left;
+}
+.form-group input{
+    /* text-align:center; */
+    align: center;
+    valign: center;
+}
+
+table td{
+    vertical-align:middle ;
+}
+
+#btn-edit{
+    float: left;
+}
+
+#btn-del{
+    float: right;
+}

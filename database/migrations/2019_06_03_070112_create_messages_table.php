@@ -15,10 +15,12 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id')->index();
+            $table->string('title');
+            $table->string('content');
             $table->timestamps();
-            $table->string('name');
-            // $table->text('content');
-            $table->integer('user_id')->index();
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
