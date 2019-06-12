@@ -7,7 +7,6 @@ use App\Message;
 use App\User;
 use App\Note;
 use DB;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
@@ -31,7 +30,7 @@ class MessageController extends Controller
 
             $note = DB::table('messages')
                     ->leftJoin('notes','notes.message_id','=','messages.id')
-                    ->select('message_id', \DB::raw('count(*) as total'))
+                    ->select('message_id', \DB::raw('count(notes.message_id) as total'))
                     ->groupBy('messages.id')
                     ->get();
 
@@ -117,14 +116,14 @@ class MessageController extends Controller
               'title' => $request->title,
         ]);
 
-        return Redirect('/message');
+        return Redirect('/message')->with('success','Edit message success !');
     }
 
     //delete message
     public function destroy(Message $message)
     {
       $message->delete();
-      return Redirect('/message');
+      return Redirect('/message')->with('success','Delete message success !');
     }
 
     //show detail message
@@ -134,6 +133,67 @@ class MessageController extends Controller
                 ->orderBy('created_at','DESC')
                 ->get();
         return view('note.show', compact('message','notes'));
+    }
+
+        public function isLikedByMe($message)
+    {
+        $post = Post::findOrFail($id)->first();
+        if (Like::whereUserId(Auth::id())->wherePostId($post->id)->exists()){
+            return 'true';
+        }
+        return 'false';
+    }
+
+    public function like(Request $request)
+    {
+        $message_id = $request['message_id'];
+        $is_like = $request['isLike'] === 'true';
+        $update = false;
+        $message = Message::find($message_id);
+
+        if(!$message){
+            return null;
+        }
+
+        $user = Auth::user();
+        $like = $user->likes()->where('message_id', $message_id)->first();
+        if($like){
+            $already_like = $like->like;
+            $update = true;
+            if($already_like = $is_like){
+                $like->delete();
+                return null;
+            }
+        }
+        else{
+            $like = new Like();
+        }
+
+        $like->like = $is_like;
+        $like->user_id = $user->id;
+        $like->message_id = $message->id;
+
+        if($update){
+            $like->update();
+        }
+        else{
+            $like->save();
+        }
+        return null;
+        // $existing_like = Like::withTrashed()->wherePostId($post->id)->whereUserId(Auth::id())->first();
+        //
+        // if (is_null($existing_like)) {
+        //     Like::create([
+        //         'post_id' => $post->id,
+        //         'user_id' => Auth::id()
+        //     ]);
+        // } else {
+        //     if (is_null($existing_like->deleted_at)) {
+        //         $existing_like->delete();
+        //     } else {
+        //         $existing_like->restore();
+        //     }
+        // }
     }
 
 }

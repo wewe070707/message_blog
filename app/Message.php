@@ -17,4 +17,9 @@ class Message extends Model
     {
         return $this->hasMany(Note::class);
     }
+
+    public function likes()
+    {
+        return $this->belongsToMany('App\Like');
+    }
 }

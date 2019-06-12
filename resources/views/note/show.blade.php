@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('js')
 <script type="text/javascript">
 //leave ajax notes
@@ -9,6 +8,8 @@ $.ajaxSetup({
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
 });
+
+var csrf_js_var = "{{ csrf_token() }}";
 
 $("#ajax").click(function() {
     $.ajax({
@@ -20,10 +21,10 @@ $("#ajax").click(function() {
         dataType: 'json',
         success: function(msg) {
                 $('#ajax-append').prepend("<div id = \"panel\" class=\"container\"> <br><div id = \"panel-top\">" +
-                 msg[0]['name'] +"<span style=\"float:right\">"+ msg[0]['created_at'] +"</span></div><div id = \"panel-foot\"><span> " +
-                 msg[0]['reply_content'] +"</span><i style = \"float:right; color:#4EA1DF\">於回覆</i></div><div class = \"modal-footer\"><form action=\"/message/" + {{$message -> id}} + "/notes/ method=\"post\">"
-                  + "<input class = \"btn btn-danger\" type=\"submit\"  value = \"刪除\"></form></div></div></div>"
+                 msg[0]['name'] +"<span style=\"float:right\">"+ '1 second ago' +"</span></div><div id = \"panel-foot\"><span> " +
+                 msg[0]['reply_content'] +"</span><i style = \"float:right; color:#4EA1DF\">於 "+ msg[0]['created_at'] + "回覆</i></div><div class = \"modal-footer\">"+ "<form action=\"/message/"+ {{$message -> id}} +"/notes/" + msg[0]['note'] + " method=\"post\"><input name=\"_token\" value=\""+ csrf_js_var + "\" type=\"hidden\"><input type='hidden' name='_method' value='DELETE'><input class = \"btn btn-danger\" type=\"submit\"  disabled ='disabled' onclick=\"return confirm(\'確認刪除?\')\" value = \'刪除\'></form>" +"</div></div></div>"
              );
+             $('html,body').animate({scrollTop: 0}, 0);
             },
             error: function(xhr) {
                 console.log("fail");
@@ -34,11 +35,6 @@ $("#ajax").click(function() {
     });
 });
 </script>
-
-
-
-
-
 @endsection
 
 @section('content')
@@ -76,7 +72,7 @@ $("#ajax").click(function() {
                               <form action="/message/{{$message -> id}}/notes/{{$note -> id}}" method="post">
                                   {{csrf_field()}}
                                   {{method_field('delete')}}
-                                  <input class = "btn btn-danger" type="submit"  value = '刪除'>
+                                  <input class = "btn btn-danger" type="submit"  onclick="return confirm('確認刪除?')" value = '刪除'>
                               </form>
                           @else
                               <form>

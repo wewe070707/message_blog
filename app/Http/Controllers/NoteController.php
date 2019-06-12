@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Message;
 use App\Note;
-
+Use Carbon\Carbon;
 class NoteController extends Controller
 {
-      public function index()
-      {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-      }
+      public function index()
+     {
+         $now = Carbon::now();
+         $note = Note::orderBy('created_at',"DESC")->first();
+         return $now;
+     }
 
       public function store(Request $request, Message $message)
       {
@@ -24,10 +31,11 @@ class NoteController extends Controller
                 'user_id' => $request->user()->id
             ]);
             //ajax leave message
-            // $message = Message::orderBy('created_at',"DESC")->first();
-
+            $note = Note::orderBy('created_at',"DESC")->first();
+            // dd($note);
             $response = array([
-                // 'created_at' => Carbon::now(),
+                'note' => $note->id,
+                'created_at' => time(),
                 'reply_content' => $request->reply_content,
                 'name' => $request->user()->name,
                 'user_id' => $request->user()->id

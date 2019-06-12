@@ -12,7 +12,26 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
     <script type="text/javascript" src="{{URL::asset('js/main.js')}}"></script>
+    <script>
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+      document.getElementById("main").style.marginLeft = "250px";
+      document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    }
+
+    /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+      document.getElementById("main").style.marginLeft = "0";
+      document.body.style.backgroundColor = "white";
+    }
+    $('#mySidenav').click(function(event){
+    event.stopPropagation();
+});
+    </script>
+    <script src="https://kit.fontawesome.com/f636442e25.js"></script>
     @yield('javascript')
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -20,11 +39,12 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     @yield('css')
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm" style = "position:fixed; width:100%; z-index: 50;">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -36,7 +56,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li>
+                            <a class="nav-link" href="/message">Home <span class="sr-only"></span></a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -54,6 +76,7 @@
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <img src = "/uploads/{{ Auth::user()->avatar }}" style = "width:32px;height:32px;border-radius:50%;">
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
@@ -77,9 +100,47 @@
         </nav>
 
         <main class="py-4">
-            @include('common.flash-message')
+            <nav id="mySidenav" class="sidenav">
+                <div class = sibar-header>
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">
+                        <i class="fas fa-times"></i>
+                    </a>
+                </div>
+                <div class = "sibar-img" style = "display: flex;border-top: 1px solid #3a3f48;">
+                    <div style = "padding:10px 20px;">
+                        <img class = "img-responsive img-rounded" src = "/uploads/default.png" style = "width:50px;height:50px; border-radius: 50%;">
+                    </div>
+                    <div class="user-info" >
+                        <span class="user-name">
 
-            @yield('content')
+                        </span>
+                        <br>
+                        <span class="user-role">Name</span>
+                        <!-- <span class="user-status">
+                            <i class="fa fa-circle"></i>
+                            <span>Online</span>
+                        </span> -->
+                    </div>
+                </div>
+                <div class = "sidebar-menu" style = "border-top: 1px solid #3a3f48;">
+                    <div style = "padding:10px 20px;">
+                        <a href="/home"><i class="fas fa-home"></i>Home</a>
+                        <a href="/profile"><i class="fas fa-id-card"></i>Profile</a>
+                        <a href="/message"><i class="fas fa-comments"></i>Blog</a>
+                        <a href="#">Test2</a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Use any element to open the sidenav -->
+            <span onclick="openNav()"><i id = "open_icon" class="fas fa-align-justify fa-3x"></i></span>
+
+            <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+            <div id="main">
+            @include('common.flash-message')
+              @yield('content')
+            </div>
+
         </main>
     </div>
 @yield('js')
