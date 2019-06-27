@@ -15,7 +15,7 @@ class NoteController extends Controller
 
       public function index()
      {
-         $now = Carbon::now();
+         $now = Carbon::now('Asia/Taipei')->toDateString();
          $note = Note::orderBy('created_at',"DESC")->first();
          return $now;
      }
